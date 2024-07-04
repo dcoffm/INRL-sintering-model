@@ -1,9 +1,20 @@
+This is a matlab implementation of a sintering model based on interface dislocation nucleation rate limited densification, which is described in the following papers:
 
-This is a matlab implementation of a sintering model based on interface nucleation rate limited densification.
+https://doi.org/10.1016/j.actamat.2022.118448
 
-## Use
-The main function implementing the sintering model is the sinter() function, which predicts the density evolution of a powder compact, given a temperature profile and a set of system information including material properties and powder properties.
+This code uses an object-oriented approach, with the following classes:
+- SinterMaterial
+  - Contains intrinsic material properties such as surface diffusivity and critical stress
+- SinterModel
+  - Contains information about a single sintering trjectory, such as material, temperature profile, and powder size/density
+- SinterFit
+  - Contains one or more instances of SinterModel and attempts to fit (using the inherited Simplex class) the resuling sintering trajectory against experimentally measured sintering behavior
 
-The temperature profile is provided as an Nx2 matrix of time (s) and temperatue (°C) points, e.g. [0,24; 3000, 500; ...] indicates an initial temperature of 24°C, rising to 500°C after 3000 seconds and so on. The system information is provided as a struct with the fields described in the function and illustrated in the heating_rate.m and fit_example.m files. The user can choose between a fixed or dynamic time step integration.
+## Typical Use
+To model the result of a particular powder subjected to a particular heating schedule, we first load or define the material, construct the SinterModel object, and then call its Sinter() function.
 
-In addition to prediction, the model can be used to fit experimental data to extract material properites, as demonstrated in the fitting subfolder. In this example a simplex algorithm iteratively runs the model using varying parameter values. First it fits experimental grain size data to extract a diffusion constant, and then it fits density data to extract a critical stress and contact behavior. 
+To fit material parameters from experimental data, we construct a SinterFit object with the experimental measurements and temperature profiles, provide initial guesses for the material parameters, and then iterate the fitting algorithm.
+
+The temperature profile is provided as an Nx2 matrix of time (s) and temperatue (°C) points, e.g. [0,24; 3000, 500; ...] indicates an initial temperature of 24°C, rising to 500°C at 3000 seconds, and so on.
+
+Examples of the fitting process, as well as predictive use, are shown in the test folder.
